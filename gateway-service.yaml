@@ -1,0 +1,97 @@
+server:
+  port: 8083
+
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+      routes:
+        - id: auth-service-docs
+          uri: lb://auth-service
+          predicates:
+            - Path=/gateway/auth/v3/api-docs/**
+          filters:
+            - RewritePath=/gateway/auth/(?<segment>.*), /${segment}
+        - id: application-service-docs
+          uri: lb://application-service
+          predicates:
+            - Path=/gateway/applications/v3/api-docs/**
+          filters:
+            - RewritePath=/gateway/applications/(?<segment>.*), /${segment}
+        - id: document-service-docs
+          uri: lb://document-service
+          predicates:
+            - Path=/gateway/documents/v3/api-docs/**
+          filters:
+            - RewritePath=/gateway/documents/(?<segment>.*), /${segment}
+        - id: admin-service-docs
+          uri: lb://admin-service
+          predicates:
+            - Path=/gateway/admin/v3/api-docs/**
+          filters:
+            - RewritePath=/gateway/admin/(?<segment>.*), /${segment}
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/gateway/auth/**
+          filters:
+            - StripPrefix=1
+        - id: application-service
+          uri: lb://application-service
+          predicates:
+            - Path=/gateway/applications/**
+          filters:
+            - StripPrefix=1
+        - id: document-service
+          uri: lb://document-service
+          predicates:
+            - Path=/gateway/documents/**
+          filters:
+            - StripPrefix=1
+        - id: admin-service
+          uri: lb://admin-service
+          predicates:
+            - Path=/gateway/admin/**
+          filters:
+            - StripPrefix=1
+
+gateway:
+  security:
+    public-endpoints:
+      - /gateway/auth/signup
+      - /gateway/auth/login
+      - /gateway/auth/create-admin
+      - /swagger-ui.html
+      - /swagger-ui/**
+      - /v3/api-docs/**
+      - /gateway/auth/v3/api-docs/**
+      - /gateway/applications/v3/api-docs/**
+      - /gateway/documents/v3/api-docs/**
+      - /gateway/admin/v3/api-docs/**
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    urls:
+      - name: auth-service
+        url: /gateway/auth/v3/api-docs
+      - name: application-service
+        url: /gateway/applications/v3/api-docs
+      - name: document-service
+        url: /gateway/documents/v3/api-docs
+      - name: admin-service
+        url: /gateway/admin/v3/api-docs
