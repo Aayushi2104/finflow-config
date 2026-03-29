@@ -21,3 +21,27 @@ services:
     url: http://localhost:8082
   auth-service:
     url: http://localhost:8081
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      applicationService:
+        sliding-window-size: 5
+        minimum-number-of-calls: 3
+        permitted-number-of-calls-in-half-open-state: 2
+        wait-duration-in-open-state: 10s
+        failure-rate-threshold: 50
+      authService:
+        sliding-window-size: 5
+        minimum-number-of-calls: 3
+        permitted-number-of-calls-in-half-open-state: 2
+        wait-duration-in-open-state: 10s
+        failure-rate-threshold: 50
+  retry:
+    instances:
+      applicationService:
+        max-attempts: 3
+        wait-duration: 500ms
+      authService:
+        max-attempts: 3
+        wait-duration: 500ms

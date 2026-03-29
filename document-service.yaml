@@ -27,3 +27,18 @@ cloudinary:
 
 file:
   upload-dir: ${FILE_UPLOAD_DIR:C:/finflow/uploads}
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      rabbitPublisher:
+        sliding-window-size: 5
+        minimum-number-of-calls: 3
+        permitted-number-of-calls-in-half-open-state: 2
+        wait-duration-in-open-state: 10s
+        failure-rate-threshold: 50
+  retry:
+    instances:
+      rabbitPublisher:
+        max-attempts: 3
+        wait-duration: 500ms
