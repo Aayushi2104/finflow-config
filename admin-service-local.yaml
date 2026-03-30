@@ -1,0 +1,5 @@
+services:
+  application-service:
+    url: http://localhost:8082
+  auth-service:
+    url: http://localhost:8081
